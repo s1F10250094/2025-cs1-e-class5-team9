@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="jp">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>title</title>
 </head>
 
 <body>
+    <h1>マインクラフト</h1>
+    <h2>サバイバル</h2>
+    <h2>クリエイティブ</h2>
+    <h2>MOD</h2>
 
 </body>
 
