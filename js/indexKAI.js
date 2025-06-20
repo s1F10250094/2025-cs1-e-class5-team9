@@ -43,6 +43,7 @@ let mouse = new THREE.Vector2();
 let interactiveObjects = [];
 
 
+
 // Initialize the 3D scene
 function init() {
     setupRenderer();
