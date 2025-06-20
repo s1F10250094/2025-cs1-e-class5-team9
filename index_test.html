@@ -11,9 +11,16 @@
       }
     }
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const noScriptWarning = document.querySelector('.no-script-warning');
+            noScriptWarning.style.display = 'none';
+            //document.getElementById("renderCanvas").hidden = false;
+        });
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/indexKAI.js"></script>
     <style>
         body {
             margin: 0;
@@ -39,7 +46,11 @@
 </head>
 
 <body>
-    <canvas id="renderCanvas"></canvas>
+    <div class="no-script-warning">
+        <p>JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
+        <p>JavaScriptを有効にしてください</p>
+    </div>
+    <canvas id="renderCanvas" width="0" height="0"></canvas>
 </body>
 
 </html>
