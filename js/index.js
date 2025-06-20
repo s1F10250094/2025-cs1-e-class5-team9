@@ -6,12 +6,16 @@ let images = {
     cloud:'images/textures/cloud.png',
     moon:'images/textures/moon.png'
 };
+
+let orbit_line;
+
 let scene, camera, renderer, earth, cloudMesh;
 let gridHelper
 let raycaster, mouse, controls;
 let centerPoint, radius, tiltAngleDegrees, tiltAngleRadians, pivot;
 let moonMesh, moonGeometry, moonMaterial;
 let meshList = [];
+const enable_stop = false;
 
 // 3D空間を作成するための初期化関数
 function init() {
@@ -132,6 +136,19 @@ function init() {
     meshList.push(earth); // メッシュをリストに追加
     meshList.push(cloudMesh); // 雲のメッシュもリストに追加
     meshList.push(moonMesh);
+
+    // 軌道線の作成
+    const orbitGeometry = new THREE.RingGeometry(radius - 0.2, radius + 0.2, 64, 1,  0, Math.PI * 2);
+    const orbitMaterial = new THREE.MeshBasicMaterial({
+        color: 0xe6e6fa,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.5
+    });
+    orbit_line = new THREE.Mesh(orbitGeometry, orbitMaterial);
+    orbit_line.rotation.x = Math.PI / 2; // 軌道線を水平に配置
+    //orbit_line.position.copy(centerPoint); // 軌道線を中心点に配置
+    pivot.add(orbit_line); // 軌道線をシーンに追加
 
     // 平行光源
     const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
