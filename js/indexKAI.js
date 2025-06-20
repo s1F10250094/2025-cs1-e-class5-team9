@@ -25,6 +25,10 @@ const CONFIG = {
         earthRotationSpeed: 0.01,
         moonRotationSpeed: 0.012,
         orbitSpeed: 0.008
+    },
+    click: {
+        zoomFactor: 2.5, // How many times the object's size to zoom in
+        animationSpeed: 0.08 // 0 to 1, higher is faster
     }
 };
 
@@ -37,6 +41,7 @@ let animationDirection = 1;
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let interactiveObjects = [];
+
 
 // Initialize the 3D scene
 function init() {
