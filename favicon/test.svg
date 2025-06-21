@@ -1,0 +1,27 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="blur-effect">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#4ad2ff"/>
+
+  <g filter="url(#blur-effect)">
+    <g>
+      <path d="M 105,30 C 120,20 150,25 175,45 S 190,80 170,90 C 150,100 145,85 130,80 S 115,60 105,70 Z" fill="#90c84f"/>
+      <path d="M 135,65 C 145,68 155,75 150,85 S 130,88 135,75 Z" fill="#6f9a3c"/>
+    </g>
+
+    <path d="M 40,30 C 55,25 70,35 65,50 C 60,65 45,60 40,45 Z" fill="#90c84f"/>
+
+    <g>
+      <path d="M 30,120 C 40,110 75,115 85,130 S 80,165 60,170 C 40,175 20,160 25,140 Z" fill="#90c84f"/>
+      <path d="M 45,135 C 55,132 65,140 68,150 S 55,160 48,150 Z" fill="#6f9a3c"/>
+    </g>
+
+    <path d="M 130,125 C 145,120 160,130 155,145 C 150,160 135,155 130,140 Z" fill="#90c84f"/>
+
+    <path d="M 145,170 C 160,168 170,175 168,185 C 165,195 150,192 145,180 Z" fill="#90c84f"/>
+  </g>
+</svg>

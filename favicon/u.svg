@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_1" data-name="レイヤー_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100">
+  <!-- Generator: Adobe Illustrator 29.6.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 207)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st0, .st1, .st2, .st3 {
+        stroke: #231815;
+        stroke-miterlimit: 10;
+      }
+
+      .st1 {
+        fill: #22ac38;
+      }
+
+      .st2 {
+        fill: #f8b62d;
+      }
+
+      .st3 {
+        fill: #1d2088;
+      }
+    </style>
+  </defs>
+  <polygon class="st3" points="48.9 46.09 48.9 77.88 21.36 61.99 21.36 30.19 48.9 46.09"/>
+  <polygon class="st2" points="76.44 30.19 76.44 61.99 48.9 77.88 48.9 46.09 76.44 30.19"/>
+  <polygon class="st1" points="76.44 30.19 48.9 46.09 21.36 30.19 48.9 14.29 76.44 30.19"/>
+  <line class="st0" x1="48.9" y1="46.09" x2="48.9" y2="45.52"/>
+</svg>
