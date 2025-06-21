@@ -1,0 +1,10 @@
+#context-menu {
+    display: none;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 200px;
+    height: 100px;
+    border: 1px solid #000;
+    background-color: rgba(155, 155, 155, 0.635);
+}
