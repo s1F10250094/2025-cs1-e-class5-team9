@@ -1,0 +1,31 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="200" height="200" fill="#f9c27c"/>
+  
+  <!-- 犬の顔 -->
+  <circle cx="100" cy="100" r="60" fill="url(#grad1)" stroke="#8B4513" stroke-width="4"/>
+  
+  <!-- 耳 -->
+  <ellipse cx="60" cy="80" rx="20" ry="30" fill="#8B4513"/>
+  <ellipse cx="140" cy="80" rx="20" ry="30" fill="#8B4513"/>
+  
+  <!-- 目 -->
+  <circle cx="80" cy="100" r="8" fill="#000"/>
+  <circle cx="120" cy="100" r="8" fill="#000"/>
+  
+  <!-- 口・鼻 -->
+  <circle cx="100" cy="120" r="6" fill="#000"/>
+  <path d="M 100 126 Q 90 140, 80 130" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M 100 126 Q 110 140, 120 130" stroke="#000" stroke-width="3" fill="none"/>
+  
+  <!-- こんがり感（焼き色） -->
+  <defs>
+    <radialGradient id="grad1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f4a460; stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d2691e; stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- テキスト -->
+  <text x="50" y="180" font-size="20" font-family="Arial" fill="#8B4513" font-weight="bold">こんがりーぬ</text>
+</svg>

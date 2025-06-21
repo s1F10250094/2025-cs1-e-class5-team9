@@ -6,7 +6,8 @@ const CONFIG = {
     images: {
         earth: 'images/textures/earth.png',
         cloud: 'images/textures/cloud.png',
-        moon: 'images/textures/moon.png'
+        moon: 'images/textures/moon.png',
+        select: 'images/textures/select.png'
     },
     moon: {
         radius: 64,
@@ -28,13 +29,13 @@ const CONFIG = {
     },
     click: {
         zoomFactor: 2.5, // How many times the object's size to zoom in
-        animationSpeed: 0.08 // 0 to 1, higher is faster
+        animationSpeed: 0.04 // 0 to 1, higher is faster
     }
 };
 
 // Global variables
 let scene, camera, renderer, controls;
-let earth, cloudMesh, moonMesh, pivot, orbitLine;
+let earth, cloudMesh, moonMesh, pivot, orbitLine, selectMarker;
 let centerPoint = new THREE.Vector3(0, 25, 0);
 let animationDirection = 1;
 
@@ -63,6 +64,7 @@ function init() {
     createEarth();
     createMoon();
     createOrbitLine();
+    createSelectMarker();
 
     // listen for hover
     // Listen for mouse events
@@ -212,6 +214,24 @@ function createOrbitLine() {
     pivot.add(orbitLine);
 }
 
+function createSelectMarker() {
+    const loader = new THREE.TextureLoader();
+    const selectTexture = loader.load(CONFIG.images.select);
+    configureTexture(selectTexture);
+
+    // マーカーのジオメトリをBoxGeometryに変更し、テクスチャを適用します
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({
+        map: selectTexture,
+        transparent: true, // テクスチャの透明部分を透過させます
+        side: THREE.DoubleSide
+    });
+    selectMarker = new THREE.Mesh(geometry, material);
+    selectMarker.name = "select_marker";
+    selectMarker.visible = false; // 最初は非表示にします
+    scene.add(selectMarker);
+}
+
 function configureTexture(texture) {
     texture.minFilter = THREE.NearestFilter;
     texture.magFilter = THREE.NearestFilter;
@@ -266,19 +286,45 @@ function onMouseMove(event) {
 
     if (isAnimating) return;
 
-    // normalize mouse coords to -1…+1
+    // マウスカーソルの位置を正規化
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects(interactiveObjects, false);
 
-    // scale hovered / reset others
+    const hoveredObject = hits.length > 0 ? hits[0].object : null;
+
+    // 全てのインタラクティブオブジェクトのスケールを更新
     interactiveObjects.forEach(obj => {
         obj.scale.setScalar(
-            hits.length && hits[0].object === obj ? 1.2 : 1.0
+            hoveredObject === obj ? 1.2 : 1.0
         );
     });
+
+    // 最初にマーカーを現在の親から削除します
+    if (selectMarker.parent) {
+        selectMarker.parent.remove(selectMarker);
+    }
+    // デフォルトでシーンに所属させ、非表示にします
+    scene.add(selectMarker);
+    selectMarker.visible = false;
+
+    // ホバーされているオブジェクトがある場合、マーカーを更新します
+    if (hoveredObject) {
+        // マーカーをホバーされたオブジェクトの子にします
+        hoveredObject.add(selectMarker);
+        selectMarker.visible = true;
+
+        // 親オブジェクトのローカル座標の中心に配置します
+        selectMarker.position.set(0, 0, 0);
+
+        // オブジェクトのジオメトリサイズの1.1倍にマーカーをスケール
+        const objectSize = hoveredObject.name === 'earth' ? CONFIG.earth.size : CONFIG.moon.size;
+        const parentScale = hoveredObject.scale.x; // 均等なスケーリングを想定
+        const markerScale = (objectSize * 1.4) / parentScale;
+        selectMarker.scale.set(markerScale, markerScale, markerScale);
+    }
 }
 
 // Animation loop
