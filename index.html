@@ -19,8 +19,9 @@
         });
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Minecraft紹介ページ</title>
     <script type="module" src="js/indexKAI.js"></script>
+    <link rel="stylesheet" href="css/index.css">
     <style>
         body {
             margin: 0;
@@ -45,10 +46,14 @@
     </style>
 </head>
 
-<body>
-    <header>
-
-    </header>
+<body onContextmenu="return false;">
+    <!-- 未実装 Context Menu -->
+    <div id="context-menu" >
+        <ul>
+            <li id="earth-menu">地球</li>
+            <li id="moon-menu">月</li>
+        </ul>
+    </div>
     <div id="loading-screen"></div>
     <div id="earth-map"></div>
     <div id="moon-map"></div>
