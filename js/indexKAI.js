@@ -89,6 +89,9 @@ function setupRenderer() {
 function setupScene() {
     scene = new THREE.Scene();
 
+    scene.background = new THREE.Color(0x190018); // Set background color
+    scene.fog = new THREE.FogExp2(0xFFFFFF, 0.002); // Add fog for depth
+
     // Add grid helper for reference
     const gridHelper = new THREE.GridHelper(100, 100);
     scene.add(gridHelper);
@@ -263,6 +266,7 @@ function onMouseUp(event) {
         // Start the zoom animation
         isAnimating = true;
         controls.enabled = false; // Disable user controls during animation
+        selectMarker.visible = false; // Hide the marker during animation
         animationTargetInfo.object = targetObject;
 
         // Calculate where the controls should look at (the object's world center)
