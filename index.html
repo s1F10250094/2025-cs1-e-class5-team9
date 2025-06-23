@@ -22,6 +22,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft紹介ページ</title>
     <script type="module" src="js/indexKAI.js"></script>
+    <script>
+        const delay = (ms) => {
+            return new Promise((resolve) => {
+                setTimeout(resolve, ms)
+            })
+        };
+    
+        const hideSplashScreen = async () => {
+            await delay(1900);
+            const splashScreen = document.getElementById('splash-screen');
+            splashScreen.classList.add('fade-out');
+            // Remove the element from DOM after fade completes
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 800);
+        };
+        hideSplashScreen();
+    </script>
     <link rel="stylesheet" href="css/index.css">
     <style>
         body {
@@ -44,6 +62,16 @@
             outline: none !important;
             display: block;
         }
+        
+        /* Splash screen fade animation */
+        #splash-screen {
+            transition: opacity 0.8s ease-out;
+        }
+        
+        #splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -55,13 +83,25 @@
             <li id="moon-menu">月</li>
         </ul>
     </div>
-    <div id="loading-screen"></div>
+    <!-- <div id="loading-screen"></div> -->
+    
+    <div id="splash-screen" style="height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0; display: flex;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
+        <div class="splash-screen-content">
+            <h1>Minecraft</h1>
+            <p>Loading...</p>
+            <noscript style="color: rgb(255, 0, 0); font-size: 1.5rem; ">
+                
+                <p class="no-script-warning">[Error] JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
+                <p class="no-script-warning">[Error] JavaScriptを有効にしてください</p>
+            </noscript>
+        </div>
+    </div>
     <div id="earth-map"></div>
     <div id="moon-map"></div>
-    <div class="no-script-warning">
+    <!--<div class="no-script-warning">
         <p>JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
         <p>JavaScriptを有効にしてください</p>
-    </div>
+    </div> -->
     
     <canvas id="renderCanvas" width="0" height="0"></canvas>
 </body>
