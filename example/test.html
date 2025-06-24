@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>画像をドラッグ</title>
+    <style>
+        #draggableImage {
+            position: absolute; /* 絶対位置指定が必須 */
+            cursor: grab;      /* ドラッグ可能なことを示すカーソル */
+            width: 300px;      /* 画像の幅を調整 */
+            height: auto;
+            border: 2px solid #333; /* わかりやすくするために枠線を追加 */
+        }
+        body {
+            overflow: hidden; /* 画像がはみ出してもスクロールしないように */
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <img id="draggableImage" src="/images/textures/sea.png" alt="ドラッグ可能な画像">
+
+    <script>
+        const draggableImage = document.getElementById('draggableImage');
+        let isDragging = false;
+        let offsetX, offsetY;
+    
+        // マウスが画像上で押されたとき
+        draggableImage.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            // 画像内のクリックされた位置と画像左上角のオフセットを計算
+            offsetX = e.clientX - draggableImage.getBoundingClientRect().left;
+            offsetY = e.clientY - draggableImage.getBoundingClientRect().top;
+            draggableImage.style.cursor = 'grabbing'; // ドラッグ中のカーソル
+        });
+    
+        // マウスが動いているとき
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+    
+            // マウスの位置に基づいて画像を移動
+            draggableImage.style.left = (e.clientX - offsetX) + 'px';
+            draggableImage.style.top = (e.clientY - offsetY) + 'px';
+        });
+    
+        // マウスが離されたとき、またはウィンドウから出たとき
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            draggableImage.style.cursor = 'grab'; // ドラッグ可能カーソルに戻す
+        });
+    
+        // タッチデバイス対応 (簡易版)
+        draggableImage.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            offsetX = touch.clientX - draggableImage.getBoundingClientRect().left;
+            offsetY = touch.clientY - draggableImage.getBoundingClientRect().top;
+            e.preventDefault(); // デフォルトのスクロール動作を抑制
+        });
+    
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            draggableImage.style.left = (touch.clientX - offsetX) + 'px';
+            draggableImage.style.top = (touch.clientY - offsetY) + 'px';
+            e.preventDefault();
+        });
+    
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+    </script>
+</body>
+</html>

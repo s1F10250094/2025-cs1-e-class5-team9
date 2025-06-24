@@ -68,9 +68,12 @@ function init() {
 
     // listen for hover
     // Listen for mouse events
-    window.addEventListener('mousemove', onMouseMove, false);
+    /*window.addEventListener('mousemove', onMouseMove, false);
     window.addEventListener('mousedown', onMouseDown, false);
-    window.addEventListener('mouseup', onMouseUp, false);
+    window.addEventListener('mouseup', onMouseUp, false);*/
+    renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+    renderer.domElement.addEventListener('mousedown', onMouseDown, false);
+    renderer.domElement.addEventListener('mouseup', onMouseUp, false);
 
     onResize();
     window.addEventListener('resize', onResize);
