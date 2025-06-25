@@ -27,9 +27,20 @@ const CONFIG = {
         moonRotationSpeed: 0.012,
         orbitSpeed: 0.008
     },
+    cameraPosition: {
+        first: new THREE.Vector3(0, 25, 0),
+        second: new THREE.Vector3(0, 25, 0)
+    },
     click: {
         zoomFactor: 2.5, // How many times the object's size to zoom in
         animationSpeed: 0.04 // 0 to 1, higher is faster
+    },
+    debug: {
+        gridHelper: true,
+        axesHelper: true,
+        orbitControls: true,
+        splashScreen: false,
+        startScreen: false
     }
 };
 
@@ -53,6 +64,10 @@ let animationTargetInfo = {
     controlsEndPos: new THREE.Vector3()
 };
 
+// Add hover state tracking
+let currentHoveredObject = null;
+let lastHoverCheckTime = 0;
+const HOVER_CHECK_INTERVAL = 50; // Check hover state every 50ms
 
 // Initialize the 3D scene
 function init() {
@@ -77,6 +92,16 @@ function init() {
 
     onResize();
     window.addEventListener('resize', onResize);
+
+    if (CONFIG.debug.splashScreen) {
+        hideSplashScreen(1900,800);
+    }else{
+        hideSplashScreen(0,0);
+    }
+
+    if (!CONFIG.debug.startScreen) {
+        hideStartScreen(0,0);
+    }
 }
 
 function setupRenderer() {
@@ -96,8 +121,10 @@ function setupScene() {
     scene.fog = new THREE.FogExp2(0xFFFFFF, 0.002); // Add fog for depth
 
     // Add grid helper for reference
-    const gridHelper = new THREE.GridHelper(100, 100);
-    scene.add(gridHelper);
+    if (CONFIG.debug.gridHelper) {
+        const gridHelper = new THREE.GridHelper(100, 100);
+        scene.add(gridHelper);
+    }
 }
 
 function setupCamera() {
@@ -105,16 +132,19 @@ function setupCamera() {
     const height = window.innerHeight;
 
     camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+    camera.position.copy(CONFIG.cameraPosition.first);
 }
 
 function setupControls() {
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.minDistance = 50;
-    controls.maxDistance = 250;
-    controls.target.copy(centerPoint);
+    if (CONFIG.debug.orbitControls) {
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = true;
+        controls.minDistance = 50;
+        controls.maxDistance = 250;
+        controls.target.copy(centerPoint);
+    }
 }
 
 function setupLighting() {
@@ -145,7 +175,9 @@ function createEarth() {
     );
 
     // Add axis helper for debugging
-    earth.add(new THREE.AxesHelper(10));
+    if (CONFIG.debug.axesHelper) {
+        earth.add(new THREE.AxesHelper(10));
+    }
 
     // Create clouds
     createClouds(loader);
@@ -290,47 +322,58 @@ function onMouseUp(event) {
 }
 
 function onMouseMove(event) {
-
     if (isAnimating) return;
 
     // マウスカーソルの位置を正規化
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
+    // Update hover state
+    updateHoverState();
+}
+
+function updateHoverState() {
+    if (isAnimating) return;
+
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects(interactiveObjects, false);
 
     const hoveredObject = hits.length > 0 ? hits[0].object : null;
 
-    // 全てのインタラクティブオブジェクトのスケールを更新
-    interactiveObjects.forEach(obj => {
-        obj.scale.setScalar(
-            hoveredObject === obj ? 1.2 : 1.0
-        );
-    });
+    // Only update if hover state changed
+    if (currentHoveredObject !== hoveredObject) {
+        currentHoveredObject = hoveredObject;
+        
+        // 全てのインタラクティブオブジェクトのスケールを更新
+        interactiveObjects.forEach(obj => {
+            obj.scale.setScalar(
+                hoveredObject === obj ? 1.2 : 1.0
+            );
+        });
 
-    // 最初にマーカーを現在の親から削除します
-    if (selectMarker.parent) {
-        selectMarker.parent.remove(selectMarker);
-    }
-    // デフォルトでシーンに所属させ、非表示にします
-    scene.add(selectMarker);
-    selectMarker.visible = false;
+        // 最初にマーカーを現在の親から削除します
+        if (selectMarker.parent) {
+            selectMarker.parent.remove(selectMarker);
+        }
+        // デフォルトでシーンに所属させ、非表示にします
+        scene.add(selectMarker);
+        selectMarker.visible = false;
 
-    // ホバーされているオブジェクトがある場合、マーカーを更新します
-    if (hoveredObject) {
-        // マーカーをホバーされたオブジェクトの子にします
-        hoveredObject.add(selectMarker);
-        selectMarker.visible = true;
+        // ホバーされているオブジェクトがある場合、マーカーを更新します
+        if (hoveredObject) {
+            // マーカーをホバーされたオブジェクトの子にします
+            hoveredObject.add(selectMarker);
+            selectMarker.visible = true;
 
-        // 親オブジェクトのローカル座標の中心に配置します
-        selectMarker.position.set(0, 0, 0);
+            // 親オブジェクトのローカル座標の中心に配置します
+            selectMarker.position.set(0, 0, 0);
 
-        // オブジェクトのジオメトリサイズの1.1倍にマーカーをスケール
-        const objectSize = hoveredObject.name === 'earth' ? CONFIG.earth.size : CONFIG.moon.size;
-        const parentScale = hoveredObject.scale.x; // 均等なスケーリングを想定
-        const markerScale = (objectSize * 1.4) / parentScale;
-        selectMarker.scale.set(markerScale, markerScale, markerScale);
+            // オブジェクトのジオメトリサイズの1.1倍にマーカーをスケール
+            const objectSize = hoveredObject.name === 'earth' ? CONFIG.earth.size : CONFIG.moon.size;
+            const parentScale = hoveredObject.scale.x; // 均等なスケーリングを想定
+            const markerScale = (objectSize * 1.4) / parentScale;
+            selectMarker.scale.set(markerScale, markerScale, markerScale);
+        }
     }
 }
 
@@ -344,11 +387,18 @@ function tick() {
         camera.position.lerp(animationTargetInfo.cameraEndPos, speed);
         controls.target.lerp(animationTargetInfo.controlsEndPos, speed);
 
+        // Hide the loading screen
+        //const loadingScreen = document.getElementById('loading-screen');
+        //loadingScreen.style.display = 'none';
+
+        console.log(animationTargetInfo.object.name);
+
         // Check if the animation is close to complete
         if (camera.position.distanceTo(animationTargetInfo.cameraEndPos) < 0.1) {
             isAnimating = false; // Stop the animation loop
 
             // Perform the page transition
+
             const pageName = animationTargetInfo.object.name;
             window.location.href = `${pageName}.html`; // e.g., "earth.html"
             return; // Exit tick to prevent further rendering this frame
@@ -364,6 +414,12 @@ function tick() {
         earth.rotation.y += CONFIG.animation.earthRotationSpeed * timeScale * animationDirection;
         moonMesh.rotation.y += CONFIG.animation.moonRotationSpeed * timeScale * animationDirection;
         pivot.rotation.y += CONFIG.animation.orbitSpeed * timeScale * animationDirection * -1;
+
+        // Periodically check hover state to handle moving objects like the moon
+        if (nowTime - lastHoverCheckTime > HOVER_CHECK_INTERVAL) {
+            lastHoverCheckTime = nowTime;
+            updateHoverState();
+        }
     }
 
     // Update controls and render
@@ -382,6 +438,11 @@ function onResize() {
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+}
+
+function launch() {
+    //window.location.href = "earth.html";
+    hideStartScreen(0,900);
 }
 
 // Initialize and start
