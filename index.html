@@ -29,16 +29,27 @@
             })
         };
     
-        const hideSplashScreen = async () => {
-            await delay(1900);
+        const hideSplashScreen = async (delayTime,fadeTime) => {
+            await delay(delayTime);
             const splashScreen = document.getElementById('splash-screen');
             splashScreen.classList.add('fade-out');
             // Remove the element from DOM after fade completes
             setTimeout(() => {
                 splashScreen.style.display = 'none';
-            }, 800);
+            }, fadeTime);
         };
-        hideSplashScreen();
+
+        const hideStartScreen = async (delayTime,fadeTime) => {
+            await delay(delayTime);
+            const startScreen = document.getElementById('start-screen');
+            startScreen.classList.add('fade-out');
+            // Remove the element from DOM after fade completes
+            setTimeout(() => {
+                startScreen.style.display = 'none'; 
+            }, fadeTime);
+        };
+
+        //hideSplashScreen();
     </script>
     <link rel="stylesheet" href="css/index.css">
     <style>
@@ -72,6 +83,13 @@
             opacity: 0;
             pointer-events: none;
         }
+        #start-screen {
+            transition: opacity 0.8s ease-out;
+        }
+        #start-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -96,15 +114,26 @@
             </noscript>
         </div>
     </div>
+
+    <div id="loading-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
+        <div id="loading-screen-inner">
+            <h1>Loading...</h1>
+        </div>
+    </div>
+
     <div id="start-screen" style="">
-        <div class="start-screen-inner">
+        <div id="start-screen-inner">
             <h1>Minecraft紹介ページ</h1>
-            <div class="introduction">
+            <div id="introduction">
                 <p>Minecraftは、マルクス・ペルソン(通称Notch)が開発したサンドボックスゲームです。</p>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                <p>TEst</p>
             </div>
+            <button id="launch-button" type="submit" onclick="launch()">Launch</button>
             
         </div>
     </div>
+
     <div id="earth-map" style="display: none; overflow: hidden;"></div>
     <div id="moon-map" style="display: none; overflow: hidden;"></div>
     <!--<div class="no-script-warning">
