@@ -90,6 +90,45 @@
             opacity: 0;
             pointer-events: none;
         }
+        /* Loading screen fade animation */
+        #loading-screen {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #loading-screen.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Map screens styling */
+        #earth-map, #moon-map {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #222;
+            color: #fff;
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #earth-map.active, #moon-map.active {
+            display: flex;
+        }
+        .back-to-canvas-btn {
+            margin-top: 2rem;
+            padding: 0.5rem 1.5rem;
+            font-size: 1.2rem;
+            background: #00aee2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -102,8 +141,23 @@
         </ul>
     </div>
     <!-- <div id="loading-screen"></div> -->
+     <div id="debug-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #00000000; overflow: hidden; color: #ffffff; font-size: 0.5rem; pointer-events: none">
+        <div id="debug-screen-inner">
+            <h1>Debug</h1>
+            <p>camera.position: <span id="camera-position"></span></p>
+            <p>controls.target: <span id="controls-target"></span></p>
+            <p>camera.position.distanceTo(animationTargetInfo.cameraEndPos): <span id="camera-distance"></span></p>
+            <p>isAnimating: <span id="is-animating"></span></p>
+            <p>animationTargetInfo.cameraEndPos: <span id="animation-target-info-camera-end-pos"></span></p>
+            <p>animationTargetInfo.controlsEndPos: <span id="animation-target-info-controls-end-pos"></span></p>
+            <p>previousDistance: <span id="previous-distance"></span></p>
+        </div>
+     </div>
     
-    <div id="splash-screen" style="height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0; display: flex;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
+    <!-- アニメーション中の操作を防ぐオーバーレイ -->
+    <div id="animation-overlay" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 996; top: 0; bottom: 0; left: 0; right: 0; background-color: transparent; pointer-events: auto;"></div>
+    
+    <div id="splash-screen" style="height: 100vh; width: 100vw; position: fixed; z-index: 998; top: 0; bottom: 0; left: 0; right: 0; display: flex;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
         <div class="splash-screen-content">
             <h1>Minecraft</h1>
             <p>Loading...</p>
@@ -115,7 +169,7 @@
         </div>
     </div>
 
-    <div id="loading-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
+    <div id="loading-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 997; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #cce2e8; overflow: hidden;">
         <div id="loading-screen-inner">
             <h1>Loading...</h1>
         </div>
@@ -134,8 +188,14 @@
         </div>
     </div>
 
-    <div id="earth-map" style="display: none; overflow: hidden;"></div>
-    <div id="moon-map" style="display: none; overflow: hidden;"></div>
+    <div id="earth-map" style="display: none; overflow: hidden;">
+        <h2>Earth Map</h2>
+        <button class="back-to-canvas-btn" id="back-to-canvas-earth">キャンバスに戻る</button>
+    </div>
+    <div id="moon-map" style="display: none; overflow: hidden;">
+        <h2>Moon Map</h2>
+        <button class="back-to-canvas-btn" id="back-to-canvas-moon">キャンバスに戻る</button>
+    </div>
     <!--<div class="no-script-warning">
         <p>JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
         <p>JavaScriptを有効にしてください</p>
