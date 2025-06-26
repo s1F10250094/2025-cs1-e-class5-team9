@@ -57,9 +57,9 @@ const CONFIG = {
         gridHelper: true,
         axesHelper: true,
         orbitControls: true,
-        splashScreen: false,
-        startScreen: false,
-        debugScreen: true
+        splashScreen: true,
+        startScreen: true,
+        debugScreen: false
     }
 };
 
