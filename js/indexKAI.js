@@ -1,6 +1,24 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+// URLパラメータを解析してCONFIGを更新する関数
+function parseUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const configKeys = ['debugScreen', 'splashScreen', 'startScreen', 'gridHelper', 'axesHelper', 'orbitControls'];
+    
+    configKeys.forEach(key => {
+        const value = urlParams.get(key);
+        if (value !== null) {
+            if (value === '1') {
+                CONFIG.debug[key] = true;
+            } else if (value === '0') {
+                CONFIG.debug[key] = false;
+            }
+            // その他の値は無視
+        }
+    });
+}
+
 // Configuration
 const CONFIG = {
     images: {
@@ -40,7 +58,8 @@ const CONFIG = {
         axesHelper: true,
         orbitControls: true,
         splashScreen: false,
-        startScreen: false
+        startScreen: false,
+        debugScreen: true
     }
 };
 
@@ -63,14 +82,110 @@ let animationTargetInfo = {
     cameraEndPos: new THREE.Vector3(),
     controlsEndPos: new THREE.Vector3()
 };
+let previousDistance = 0; // 前回の距離を記録する変数を追加
 
 // Add hover state tracking
 let currentHoveredObject = null;
 let lastHoverCheckTime = 0;
 const HOVER_CHECK_INTERVAL = 50; // Check hover state every 50ms
 
+// --- Loading Screen Fade Utility ---
+function showLoadingScreen() {
+    const loading = document.getElementById('loading-screen');
+    if (!loading) return;
+    loading.style.display = 'flex'; // まず表示状態にする
+    loading.classList.remove('fade-out');
+    // 次のフレームでfade-in開始（CSS transitionが効くように）
+    requestAnimationFrame(() => {
+        loading.classList.add('visible');
+    });
+}
+function hideLoadingScreen() {
+    const loading = document.getElementById('loading-screen');
+    if (!loading) return;
+    loading.classList.add('fade-out');
+    loading.classList.remove('visible');
+    setTimeout(() => {
+        loading.classList.remove('fade-out');
+        loading.style.display = 'none'; // 完全に非表示にする
+    }, 500); // CSSのtransitionと合わせる
+}
+
+// --- Map/Canvas Switch Logic ---
+function showMapScreen(map) {
+
+    // アニメーション中の操作を防ぐオーバーレイを非表示
+    const animationOverlay = document.getElementById('animation-overlay');
+    if (animationOverlay) {
+        animationOverlay.style.display = 'none';
+    }
+    
+    // map: 'earth' or 'moon'
+    showLoadingScreen();
+    setTimeout(() => {
+        document.getElementById('renderCanvas').style.display = 'none';
+        // インラインスタイルを直接設定（CSSクラスより優先度が高い）
+        document.getElementById('earth-map').style.display = 'none';
+        document.getElementById('moon-map').style.display = 'none';
+        if (map === 'earth') {
+            document.getElementById('earth-map').style.display = 'flex';
+        } else {
+            document.getElementById('moon-map').style.display = 'flex';
+        }
+        hideLoadingScreen();
+    }, 500);
+}
+function showCanvasScreen() {
+    showLoadingScreen();
+    setTimeout(() => {
+        // インラインスタイルを直接設定
+        document.getElementById('earth-map').style.display = 'none';
+        document.getElementById('moon-map').style.display = 'none';
+        document.getElementById('renderCanvas').style.display = 'block';
+        
+        // キャンバスに戻った時にレンダリングを再開
+        restartRendering();
+        
+        hideLoadingScreen();
+    }, 500);
+}
+
+// レンダリングを再開する関数
+function restartRendering() {
+    // カメラのアスペクト比を再計算
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    
+    // レンダラーのサイズを更新
+    renderer.setSize(width, height);
+    
+    // コントロールを有効化（もし無効になっていた場合）
+    if (controls) {
+        controls.enabled = true;
+    }
+    controls.target.copy(centerPoint);
+    
+    // アニメーション状態をリセット
+    isAnimating = false;
+    previousDistance = 0;
+    
+    // レンダリングループを再開
+    requestAnimationFrame(tick);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 戻るボタン
+    document.getElementById('back-to-canvas-earth').onclick = showCanvasScreen;
+    document.getElementById('back-to-canvas-moon').onclick = showCanvasScreen;
+});
+
 // Initialize the 3D scene
 function init() {
+    // URLパラメータを解析してCONFIGを更新
+    parseUrlParams();
+    
     setupRenderer();
     setupScene();
     setupCamera();
@@ -101,6 +216,10 @@ function init() {
 
     if (!CONFIG.debug.startScreen) {
         hideStartScreen(0,0);
+    }
+
+    if (CONFIG.debug.debugScreen) {
+        document.getElementById('debug-screen').style.display = 'block';
     }
 }
 
@@ -304,6 +423,12 @@ function onMouseUp(event) {
         selectMarker.visible = false; // Hide the marker during animation
         animationTargetInfo.object = targetObject;
 
+        // アニメーション中の操作を防ぐオーバーレイを表示
+        const animationOverlay = document.getElementById('animation-overlay');
+        if (animationOverlay) {
+            animationOverlay.style.display = 'block';
+        }
+
         // Calculate where the controls should look at (the object's world center)
         targetObject.getWorldPosition(animationTargetInfo.controlsEndPos);
 
@@ -318,6 +443,9 @@ function onMouseUp(event) {
         animationTargetInfo.cameraEndPos
             .copy(animationTargetInfo.controlsEndPos)
             .add(direction.multiplyScalar(distance));
+            
+        // アニメーション開始時の距離を初期化
+        previousDistance = camera.position.distanceTo(animationTargetInfo.cameraEndPos);
     }
 }
 
@@ -391,18 +519,33 @@ function tick() {
         //const loadingScreen = document.getElementById('loading-screen');
         //loadingScreen.style.display = 'none';
 
-        console.log(animationTargetInfo.object.name);
-
-        // Check if the animation is close to complete
-        if (camera.position.distanceTo(animationTargetInfo.cameraEndPos) < 0.1) {
+        // 現在の距離を計算
+        const currentDistance = camera.position.distanceTo(animationTargetInfo.cameraEndPos);
+        
+        // 前回の距離との差分を計算
+        const distanceDifference = Math.abs(currentDistance - previousDistance);
+        
+        // 差分が0.1未満になったらアニメーション完了とみなす
+        if (distanceDifference < 0.1) {
             isAnimating = false; // Stop the animation loop
 
-            // Perform the page transition
+            
 
+            // Perform the map screen transition instead of page transition
             const pageName = animationTargetInfo.object.name;
-            window.location.href = `${pageName}.html`; // e.g., "earth.html"
+            if (pageName === 'earth') {
+                showMapScreen('earth');
+            } else if (pageName === 'moon') {
+                showMapScreen('moon');
+            }
+
+            
+            
             return; // Exit tick to prevent further rendering this frame
         }
+        
+        // 現在の距離を前回の距離として保存
+        previousDistance = currentDistance;
     } else {
         // Normal animation when not zooming
         const nowTime = performance.now();
@@ -420,6 +563,16 @@ function tick() {
             lastHoverCheckTime = nowTime;
             updateHoverState();
         }
+    }
+
+    if (CONFIG.debug.debugScreen) {
+        document.getElementById('camera-position').textContent = camera.position.toArray().toString();
+        document.getElementById('controls-target').textContent = controls.target.toArray().toString();
+        document.getElementById('camera-distance').textContent = camera.position.distanceTo(animationTargetInfo.cameraEndPos).toString();
+        document.getElementById('is-animating').textContent = isAnimating.toString();
+        document.getElementById('animation-target-info-camera-end-pos').textContent = animationTargetInfo.cameraEndPos.toArray().toString();
+        document.getElementById('animation-target-info-controls-end-pos').textContent = animationTargetInfo.controlsEndPos.toArray().toString();
+        document.getElementById('previous-distance').textContent = previousDistance.toString();
     }
 
     // Update controls and render
