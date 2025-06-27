@@ -1,4 +1,21 @@
-h1{
-    color: black;
-    text-align:center
+h1, h2, h3, ul, li, ol, p {
+    color: #fff;
+    text-shadow: 3px 3px 4px rgba(0,0,0,0.7);
+    /* 必要に応じて他のプロパティを追加 */
+}
+
+h1 {
+    text-align: center;
+}
+ul li a:hover {
+    color: #ffd700; 
+    text-decoration: underline; 
+}
+ul li a {
+    color: hsl(199, 95%, 64%); /* 白色に変更 */
+    text-decoration: none; /* 必要なら下線も消せます */
+}
+
+img{
+    text-align: center;
 }
