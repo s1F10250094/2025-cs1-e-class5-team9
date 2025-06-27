@@ -593,7 +593,7 @@ function onResize() {
     camera.updateProjectionMatrix();
 }
 
-function launch() {
+window.launch = function() {
     //window.location.href = "earth.html";
     hideStartScreen(0,900);
 }
