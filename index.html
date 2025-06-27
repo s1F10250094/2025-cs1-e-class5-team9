@@ -12,6 +12,7 @@
       }
     }
     </script>
+    <script src="https://unpkg.com/three@0.165.0/files/examples/fonts/gentilis_regular.typeface.json"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const noScriptWarning = document.querySelector('.no-script-warning');
@@ -213,6 +214,7 @@
     </div>
 
     <div id="start-screen" style="">
+        <div style="position: absolute; bottom: 10px; right: 10px; z-index: 999; background-color: #00aee2; color: #fff; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="hideStartScreen(0, 0)"><button id="close-start-screen">閉じる</button></div>
         <div id="start-screen-inner">
             <h1>Minecraft紹介ページ</h1>
             <div id="introduction">
@@ -222,7 +224,7 @@
                 <p>Minecraftの特徴は、自由度が高く、創造性を発揮できることです。</p>
                 <h2>Minecraftの魅力</h2>
                 <p>Minecraftの魅力は、自由度が高く、創造性を発揮できることです。</p>
-                <img src="images/example/selection_1.gif" alt="選択例" type="image/gif">
+                <!-- <img src="images/example/selection_1.gif" alt="選択例" type="image/gif"> -->
             </div>
             <button id="launch-button" type="submit" onclick="launch()">Launch</button>
 
