@@ -19,17 +19,24 @@
             //document.getElementById("renderCanvas").hidden = false;
         });
     </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft紹介ページ</title>
     <script type="module" src="js/indexKAI.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js"></script>
     <script>
         const delay = (ms) => {
             return new Promise((resolve) => {
                 setTimeout(resolve, ms)
             })
         };
-    
-        const hideSplashScreen = async (delayTime,fadeTime) => {
+
+        const hideSplashScreen = async (delayTime, fadeTime) => {
             await delay(delayTime);
             const splashScreen = document.getElementById('splash-screen');
             splashScreen.classList.add('fade-out');
@@ -39,13 +46,13 @@
             }, fadeTime);
         };
 
-        const hideStartScreen = async (delayTime,fadeTime) => {
+        const hideStartScreen = async (delayTime, fadeTime) => {
             await delay(delayTime);
             const startScreen = document.getElementById('start-screen');
             startScreen.classList.add('fade-out');
             // Remove the element from DOM after fade completes
             setTimeout(() => {
-                startScreen.style.display = 'none'; 
+                startScreen.style.display = 'none';
             }, fadeTime);
         };
 
@@ -57,12 +64,14 @@
             margin: 0;
             overflow: hidden;
         }
+
         html {
             height: 100%;
             width: 100%;
             margin: 0;
             padding: 0;
         }
+
         #renderCanvas {
             width: 100%;
             height: 100%;
@@ -73,41 +82,51 @@
             outline: none !important;
             display: block;
         }
-        
+
         /* Splash screen fade animation */
         #splash-screen {
             transition: opacity 0.8s ease-out;
         }
-        
+
         #splash-screen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
+
         #start-screen {
             transition: opacity 0.8s ease-out;
         }
+
         #start-screen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
+
         /* Loading screen fade animation */
         #loading-screen {
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
         }
+
         #loading-screen.visible {
             opacity: 1;
             pointer-events: auto;
         }
+
         #loading-screen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
+
         /* Map screens styling */
-        #earth-map, #moon-map {
+        #earth-map,
+        #moon-map {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: #222;
             color: #fff;
             z-index: 1001;
@@ -116,9 +135,12 @@
             justify-content: center;
             flex-direction: column;
         }
-        #earth-map.active, #moon-map.active {
+
+        #earth-map.active,
+        #moon-map.active {
             display: flex;
         }
+
         .back-to-canvas-btn {
             margin-top: 2rem;
             padding: 0.5rem 1.5rem;
@@ -129,19 +151,29 @@
             border-radius: 8px;
             cursor: pointer;
         }
+
+        #introduction img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+            max-height: 300px;
+            object-fit: contain;
+        }
     </style>
 </head>
 
 <body onContextmenu="return false;">
     <!-- 未実装 Context Menu -->
-    <div id="context-menu" >
+    <div id="context-menu">
         <ul>
             <li id="earth-menu">地球</li>
             <li id="moon-menu">月</li>
         </ul>
     </div>
     <!-- <div id="loading-screen"></div> -->
-     <div id="debug-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #00000000; overflow: hidden; color: #ffffff; font-size: 0.5rem; pointer-events: none">
+    <div id="debug-screen"
+        style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 999; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #00000000; overflow: hidden; color: #ffffff; font-size: 0.5rem; pointer-events: none">
         <div id="debug-screen-inner">
             <h1>Debug</h1>
             <p>camera.position: <span id="camera-position"></span></p>
@@ -152,24 +184,29 @@
             <p>animationTargetInfo.controlsEndPos: <span id="animation-target-info-controls-end-pos"></span></p>
             <p>previousDistance: <span id="previous-distance"></span></p>
         </div>
-     </div>
-    
+    </div>
+
     <!-- アニメーション中の操作を防ぐオーバーレイ -->
-    <div id="animation-overlay" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 996; top: 0; bottom: 0; left: 0; right: 0; background-color: transparent; pointer-events: auto;"></div>
-    
-    <div id="splash-screen" style="height: 100vh; width: 100vw; position: fixed; z-index: 998; top: 0; bottom: 0; left: 0; right: 0; display: flex;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
+    <div id="animation-overlay"
+        style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 996; top: 0; bottom: 0; left: 0; right: 0; background-color: transparent; pointer-events: auto;">
+    </div>
+
+    <div id="splash-screen"
+        style="height: 100vh; width: 100vw; position: fixed; z-index: 998; top: 0; bottom: 0; left: 0; right: 0; display: flex;  align-items: center; justify-content: center; background-color: #00aee2; overflow: hidden;">
         <div class="splash-screen-content">
             <h1>Minecraft</h1>
             <p>Loading...</p>
             <noscript style="color: rgb(255, 0, 0); font-size: 1.5rem; ">
-                
-                <p class="no-script-warning">[Error] JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
+
+                <p class="no-script-warning">[Error] JavaScript is disabled in your browser. Please enable JavaScript to
+                    use this page.</p>
                 <p class="no-script-warning">[Error] JavaScriptを有効にしてください</p>
             </noscript>
         </div>
     </div>
 
-    <div id="loading-screen" style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 997; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #cce2e8; overflow: hidden;">
+    <div id="loading-screen"
+        style="display: none; height: 100vh; width: 100vw; position: fixed; z-index: 997; top: 0; bottom: 0; left: 0; right: 0;  align-items: center; justify-content: center; background-color: #cce2e8; overflow: hidden;">
         <div id="loading-screen-inner">
             <h1>Loading...</h1>
         </div>
@@ -179,19 +216,27 @@
         <div id="start-screen-inner">
             <h1>Minecraft紹介ページ</h1>
             <div id="introduction">
+                <h2>Minecraftとは</h2>
                 <p>Minecraftは、マルクス・ペルソン(通称Notch)が開発したサンドボックスゲームです。</p>
-                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-                <p>TEst</p>
+                <h2>Minecraftの特徴</h2>
+                <p>Minecraftの特徴は、自由度が高く、創造性を発揮できることです。</p>
+                <h2>Minecraftの魅力</h2>
+                <p>Minecraftの魅力は、自由度が高く、創造性を発揮できることです。</p>
+                <img src="images/example/selection_1.gif" alt="選択例" type="image/gif">
             </div>
             <button id="launch-button" type="submit" onclick="launch()">Launch</button>
-            
+
         </div>
     </div>
 
     <div id="earth-map" style="display: none; overflow: hidden;">
+
+        
+
         <h2>Earth Map</h2>
         <button class="back-to-canvas-btn" id="back-to-canvas-earth">キャンバスに戻る</button>
     </div>
+
     <div id="moon-map" style="display: none; overflow: hidden;">
         <h2>Moon Map</h2>
         <button class="back-to-canvas-btn" id="back-to-canvas-moon">キャンバスに戻る</button>
@@ -200,7 +245,7 @@
         <p>JavaScript is disabled in your browser. Please enable JavaScript to use this page.</p>
         <p>JavaScriptを有効にしてください</p>
     </div> -->
-    
+
     <canvas id="renderCanvas" width="0" height="0"></canvas>
 </body>
 
