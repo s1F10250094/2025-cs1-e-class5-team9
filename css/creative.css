@@ -1,10 +1,19 @@
-body {
-    color: #fff;
+h1,
+ul {
+    color: #ffffff;
 }
 
 h1 {
     text-align: center;
     padding: 100px 10px 300px 10px;
+}
+
+h2 {
+    color: #ffffff;
+}
+
+p {
+    color: #E0E0E0;
 }
 
 ul li a:hover {
@@ -15,6 +24,10 @@ ul li a:hover {
 ul li a {
     color: hsl(199, 95%, 64%);
     text-decoration: none;
+}
+
+.list {
+    color: #ffffff;
 }
 
 p#id_p1 {
@@ -28,6 +41,11 @@ span.h1big {
 img {
     width: 100%;
     height: auto;
+}
+
+hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .youtube {
