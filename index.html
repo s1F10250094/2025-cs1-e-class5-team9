@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico">
     <script type="importmap">
     {
       "imports": {
@@ -214,13 +214,14 @@
     </div>
 
     <div id="start-screen" style="">
-        <div style="position: absolute; bottom: 10px; right: 10px; z-index: 999; background-color: #00aee2; color: #fff; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="hideStartScreen(0, 0)"><button id="close-start-screen">閉じる</button></div>
+        <div style="position: fixed; bottom: 10px; right: 10px; z-index: 999; background-color: #00aee2; color: #fff; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="hideStartScreen(0, 0)"><button id="close-start-screen">閉じる</button></div>
         <div id="start-screen-inner">
             <h1>このページの操作方法</h1>
             <div id="introduction">
                 <h2>星を選択</h2>
-                <p>月もしくは地球を選択し、降り立ちましょう</p>
-                <h2 class="border-solid border-2 border-black">Minecraftの特徴</h2>
+                <p>月もしくは地球を選択しよう。</p>
+                <img src="images/example/selection_1.gif" alt="選択例" type="image/gif">
+                <h2 class="border-solid border-2 border-black">バイオームの選択</h2>
                 <p>Minecraftの特徴は、自由度が高く、創造性を発揮できることです。</p>
                 <h2 class="border-solid border-2 border-black">Minecraftの魅力</h2>
                 <p></p>
@@ -234,9 +235,12 @@
     <div id="earth-map" style="display: none; overflow: hidden; background-image: url(/images/textures/earth_map_sea.png); background-size: cover;">
 
         
-
+        
         <h2>Earth Map</h2>
         <button class="back-to-canvas-btn" id="back-to-canvas-earth">キャンバスに戻る</button>
+        
+        
+        
     </div>
 
     <div id="moon-map" style="display: none; overflow: hidden;">
