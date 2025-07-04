@@ -20,3 +20,19 @@ ul li a {
 p#id_p1 {
     font-style: italic;
 }
+
+span.h1big {
+    font-size: 90px;
+}
+
+@media (min-width: 900px) {
+    .main {
+        margin: 0px 200px 50px 200px;
+    }
+}
+
+@media (max-width: 899px) {
+    .main {
+        margin: 0px 50px 50px 50px;
+    }
+}
