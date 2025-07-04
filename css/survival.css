@@ -6,7 +6,15 @@ h1, h2, h3, ul, li, ol, p {
 
 h1 {
     text-align: center;
+    text-decoration: underline;
+
 }
+
+h2 {
+  text-shadow: 3px 3px 0px #000, 6px 6px 6px #555;
+}
+
+
 ul li a:hover {
     color: #ffd700; 
     text-decoration: underline; 
@@ -19,3 +27,43 @@ ul li a {
 img{
     text-align: center;
 }
+/* ハンバーガーアイコンのスタイル */
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .menu-icon span {
+            display: block;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+        }
+        /* ナビゲーションメニューのスタイル */
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 12px;
+        }
+        .nav-menu.active {
+            display: flex;
+        }
+        .nav-menu a {
+            color: #333;
+            text-decoration: none;
+            padding: 8px;
+            font-size: 18px;
+        }
+        .nav-menu a:hover {
+            background-color: #f0f0f0;
+        }
