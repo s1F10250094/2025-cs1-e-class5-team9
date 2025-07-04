@@ -5,10 +5,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サバイバル</title>
+    <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="css/survival.css">
+    <style>
+        .hamburger-menu {
+            position: relative;
+            /* Needed for absolute positioning of menu */
+            z-index: 1000;
+            /* Ensure it's above other content */
+        }
+
+        /* Hide the checkbox */
+        #menu-toggle {
+            display: none;
+        }
+
+        /* Style the hamburger icon */
+        .menu-icon {
+            display: block;
+            width: 30px;
+            height: 25px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+            /* Keep icon above the menu when open */
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            position: absolute;
+            left: 0;
+            transition: all 0.3s ease-in-out;
+            /* Smooth transitions for lines */
+        }
+
+        .menu-icon span:nth-child(1) {
+            top: 0;
+        }
+
+        .menu-icon span:nth-child(2) {
+            top: 11px;
+        }
+
+        .menu-icon span:nth-child(3) {
+            top: 22px;
+        }
+
+        /* Style the sidebar menu */
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            /* Start off-screen to the right */
+            width: 250px;
+            height: 100%;
+            background-color: #F4F4F4;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease-in-out;
+            /* Smooth slide-in/out */
+            padding-top: 60px;
+            /* Space for the icon */
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu ul li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sidebar-menu ul li a:hover {
+            background-color: #E0E0E0;
+        }
+
+        /* --- Menu Open States --- */
+        /* When the checkbox is checked, slide the menu in */
+        #menu-toggle:checked~.sidebar-menu {
+            right: 0;
+        }
+
+        /* Animate the hamburger icon to an "X" when checked */
+        #menu-toggle:checked~.menu-icon span:nth-child(1) {
+            transform: translateY(11px) rotate(45deg);
+        }
+
+        #menu-toggle:checked~.menu-icon span:nth-child(2) {
+            opacity: 0;
+            /* Hide middle line */
+        }
+
+        #menu-toggle:checked~.menu-icon span:nth-child(3) {
+            transform: translateY(-11px) rotate(-45deg);
+        }
+    </style>
 </head>
 
 <body style="background-image: url('https://cdn.pixabay.com/photo/2015/12/23/22/39/minecraft-1106262_1280.png');">
+
+
+    <div class="hamburger-menu">
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="survival.html">サバイバル</a></li>
+                <li><a href="creative.html">クリエイティブ</a></li>
+                <li><a href="mod.html">MOD</a></li>
+            </ul>
+        </nav>
+    </div>
+
     <div class="overlay"></div>
     <div class="content">
         <h1>サバイバルモードとは？</h1>
@@ -36,6 +156,8 @@
         <li><a href="#hint_section">その他の楽しみ方やヒント（FOQ）</a></li>
         <li><a href="#link_section">まとめ・関連リンク</a></li>
     </ul>
+
+    <hr>
 
     <h2 id="survival_section">サバイバルモードの概要</h2>
     <h3>サバイバルモードとは？</h3>
@@ -107,6 +229,26 @@
     </p>
 
 
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            // Close menu when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!sidebarMenu.contains(event.target) && !menuToggle.contains(event.target) && menuToggle.checked) {
+                    menuToggle.checked = false;
+                }
+            });
+            // Optional: Close menu when a link is clicked
+            sidebarMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.checked = false;
+                });
+            });
+        });
+    </script>
 
 </body>
 

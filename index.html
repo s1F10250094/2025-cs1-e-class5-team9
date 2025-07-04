@@ -21,7 +21,7 @@
         });
     </script>
 
-    
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft紹介ページ</title>
@@ -160,6 +160,84 @@
             max-height: 300px;
             object-fit: contain;
         }
+
+        /* Right toolbar styling */
+        #right-toolbar {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #fff;
+            border-radius: 16px 0 0 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
+            padding: 1.2rem 0.5rem;
+            z-index: 1100;
+        }
+
+        .toolbar-btn {
+            background: transparent;
+            color: #00aee2;
+            border: none;
+            border-radius: 24px 0 0 24px;
+            width: 48px;
+            height: 48px;
+            font-size: 1.5rem;
+            margin: 0.2rem 0;
+            cursor: pointer;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: none;
+            padding: 0 0.5rem;
+        }
+
+        .toolbar-btn .toolbar-label {
+            opacity: 0;
+            max-width: 0;
+            margin-left: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s, max-width 0.3s, margin-left 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .toolbar-btn {
+            color: #fff;
+        }
+
+        .toolbar-label {
+            color: #00aee2;
+        }
+
+        .toolbar-btn:hover {
+            background: #00aee2;
+            color: #fff;
+        }
+
+        .toolbar-btn:hover .toolbar-label {
+            color: #fff;
+        }
+
+        .toolbar-icon {
+            flex-shrink: 0;
+            font-size: 1.5rem;
+        }
+
+        #right-toolbar:hover .toolbar-btn {
+            width: 140px;
+            /* 背景色は変更しない */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        #right-toolbar:hover .toolbar-label {
+            opacity: 1;
+            max-width: 80px;
+            margin-left: 0.7em;
+        }
     </style>
 </head>
 
@@ -201,7 +279,7 @@
                 <p class="no-script-warning">[Error] JavaScript is disabled in your browser. Please enable JavaScript to
                     use this page.</p>
                 <p class="no-script-warning">[Error] JavaScriptを有効にしてください</p>
-                
+
             </noscript>
         </div>
     </div>
@@ -214,7 +292,8 @@
     </div>
 
     <div id="start-screen" style="">
-        <div style="position: fixed; bottom: 10px; right: 10px; z-index: 999; background-color: #00aee2; color: #fff; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="hideStartScreen(0, 0)"><button id="close-start-screen">閉じる</button></div>
+        <div style="position: fixed; bottom: 10px; right: 10px; z-index: 999; background-color: #00aee2; color: #fff; padding: 10px; border-radius: 5px; cursor: pointer;"
+            onclick="hideStartScreen(0, 0)"><button id="close-start-screen">閉じる</button></div>
         <div id="start-screen-inner">
             <h1>このページの操作方法</h1>
             <div id="introduction">
@@ -232,15 +311,16 @@
         </div>
     </div>
 
-    <div id="earth-map" style="display: none; overflow: hidden; background-image: url(/images/textures/earth_map_sea.png); background-size: cover;">
+    <div id="earth-map"
+        style="display: none; overflow: hidden; background-image: url(/images/textures/earth_map_sea.png); background-size: cover;">
 
-        
-        
+
+
         <h2>Earth Map</h2>
         <button class="back-to-canvas-btn" id="back-to-canvas-earth">キャンバスに戻る</button>
-        
-        
-        
+
+
+
     </div>
 
     <div id="moon-map" style="display: none; overflow: hidden;">
@@ -253,6 +333,26 @@
     </div> -->
 
     <canvas id="renderCanvas" width="0" height="0"></canvas>
+
+    <!-- Right toolbar -->
+    <div id="right-toolbar">
+        <button class="toolbar-btn" id="tool-home" title="ホーム">
+            <span class="toolbar-icon">🏠</span>
+            <span class="toolbar-label">ホーム</span>
+        </button>
+        <button class="toolbar-btn" id="tool-earth" title="地球">
+            <span class="toolbar-icon">🌍</span>
+            <span class="toolbar-label">地球</span>
+        </button>
+        <button class="toolbar-btn" id="tool-moon" title="月">
+            <span class="toolbar-icon">🌙</span>
+            <span class="toolbar-label">月</span>
+        </button>
+        <button class="toolbar-btn" id="tool-info" title="情報">
+            <span class="toolbar-icon">ℹ️</span>
+            <span class="toolbar-label">説明</span>
+        </button>
+    </div>
 </body>
 
 </html>
