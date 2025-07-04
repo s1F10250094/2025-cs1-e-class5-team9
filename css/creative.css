@@ -6,3 +6,17 @@ h1 {
     text-align: center;
     padding: 100px 10px 300px 10px;
 }
+
+ul li a:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+
+ul li a {
+    color: hsl(199, 95%, 64%);
+    text-decoration: none;
+}
+
+p#id_p1 {
+    font-style: italic;
+}
