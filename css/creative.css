@@ -22,8 +22,8 @@ body {
 h2 {
     color: #ffffff;
     background-color: #333;
-    border-left: solid 5px #cccccc;
-    border-bottom: solid 3px #cccccc;
+    border-left: solid 20px #cccccc;
+    border-bottom: solid 5px #cccccc;
     padding: 20px;
 }
 
@@ -145,7 +145,8 @@ hr {
 
 .com {
     color: #000000;
-    background-color: #ffffff;
+    background-color: #EEEEEE;
+    font-weight: bold;
 }
 
 @media (min-width: 900px) {
