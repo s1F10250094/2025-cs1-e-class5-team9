@@ -136,7 +136,14 @@
         <hr>
     </div>
 
-
+    <button id="toTopBtn" title="ページの先頭へ">
+        <img src="images/textures/creeper-1817227_1280.png" alt="トップへ">
+    </button>
+    <script>
+        document.getElementById('toTopBtn').onclick = function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
 </body>
 
 </html>
