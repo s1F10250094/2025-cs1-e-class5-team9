@@ -9,6 +9,10 @@ h1 {
     margin-top: 0%;
 }
 
+.h1big {
+    border-bottom: solid 3px #ffffff;
+}
+
 html,
 body {
     margin: 0;
@@ -17,11 +21,14 @@ body {
 
 h2 {
     color: #ffffff;
+    background-color: #333;
+    border-left: solid 5px #cccccc;
+    border-bottom: solid 3px #cccccc;
+    padding: 20px;
 }
 
 p {
     color: #cccccc;
-    ;
 }
 
 ul li a:hover {
@@ -34,7 +41,29 @@ ul li a {
     text-decoration: none;
 }
 
-.list {
+.boxlist {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 10px;
+
+}
+
+.boxlist li {
+    width: 240px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #333;
+    font-weight: bold;
+    box-sizing: border-box;
+    margin: 0;
+    border: 1px solid #cccccc;
+}
+
+
+li.list {
     color: #ffffff;
 }
 
@@ -90,6 +119,33 @@ hr {
 
 #toTopBtn:hover {
     opacity: 1;
+}
+
+.ore {
+    color: #FFB347;
+}
+
+.yel {
+    color: #FFF176;
+}
+
+.red {
+    color: #FF8A80;
+}
+
+.yelbo {
+    color: #FFF176;
+    font-weight: bold;
+}
+
+.redbo {
+    color: #FF8A80;
+    font-weight: bold;
+}
+
+.com {
+    color: #000000;
+    background-color: #ffffff;
 }
 
 @media (min-width: 900px) {
