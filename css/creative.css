@@ -8,12 +8,14 @@ h1 {
     padding: 100px 10px 300px 10px;
 }
 
+
 h2 {
     color: #ffffff;
 }
 
 p {
-    color: #E0E0E0;
+    color: #cccccc;
+    ;
 }
 
 ul li a:hover {
@@ -32,6 +34,7 @@ ul li a {
 
 p#id_p1 {
     font-style: italic;
+    color: #ffffff;
 }
 
 span.h1big {
